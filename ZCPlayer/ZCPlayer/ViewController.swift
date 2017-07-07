@@ -65,7 +65,6 @@ extension ViewController : UITableViewDataSource {
             if self.isFullyVisible(cell: videoCell, scrollView: scrollView) {
                 let url = self.urls[indexPath.row]
                 if let controller = PlayerControllerManager.shared.dict[url] {
-                    
                     controller.addPlayerViewToSuperview(view: cell.contentView)
                 }
             } else {

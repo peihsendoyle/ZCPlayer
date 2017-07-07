@@ -28,7 +28,11 @@ class PlayerController : NSObject {
     fileprivate var currentTime : Double = 0.0
     fileprivate var durationTime : Double = 0.0
     fileprivate var timeObserver : Any?
-    fileprivate var isSeeking = false
+    fileprivate var isSeeking = false {
+        didSet {
+            self.playerView.isSeeking = self.isSeeking
+        }
+    }
     
     required init(url: URL) {
         super.init()
@@ -72,8 +76,10 @@ class PlayerController : NSObject {
                 print("Status: Paused")
             case .likelyToKeepUp:
                 self.playerView.hideLoading()
+                self.playerView.hideContainerView()
             case .unlikelyToKeepUp:
                 self.playerView.showLoading()
+                self.playerView.showContainerView()
             case .timeJump:
                 print("Player reports that time jumped.")
             case .loadedTimeRanges:
@@ -89,12 +95,16 @@ class PlayerController : NSObject {
             self.player.replaceCurrentItem(with: self.playerItem)
         }
         
-        self.player.replaceCurrentItem(with: self.playerItem)
         guard let player = self.player else { return }
         //player.seek(to: CMTimeMakeWithSeconds(0.35, 1000), toleranceBefore: kCMTimeZero, toleranceAfter: kCMTimeZero)
         player.play()
-        self.playerView.frame = view.bounds
         
+        guard !view.subviews.contains(self.playerView) else {
+            self.playerView.frame = view.bounds
+            return
+        }
+        
+        self.playerView.frame = view.bounds
         view.addSubview(self.playerView)
     }
     
@@ -103,6 +113,7 @@ class PlayerController : NSObject {
         
         guard let player = self.player else { return }
         player.pause()
+        self.playerView.hideContainerView()
         
         self.player.replaceCurrentItem(with: nil)
     }
@@ -189,6 +200,10 @@ class PlayerController : NSObject {
         self.playerView.disableSlider()
     }
     
+    func toggle(isPlay: Bool) {
+        isPlay ? self.player.pause() : self.player.play()
+    }
+    
     func getAvailableTime() -> Float {
         let timeRange = self.playerItem.loadedTimeRanges[0].timeRangeValue
         let startSeconds = CMTimeGetSeconds(timeRange.start)
@@ -216,6 +231,10 @@ class PlayerController : NSObject {
 }
 
 extension PlayerController : PlayerViewDelegate {
+    func didTouchToggleButton(isPlay: Bool) {
+        self.toggle(isPlay: isPlay)
+    }
+    
     func didScrubbing() {
         self.scrub(self.playerView.slider)
     }
