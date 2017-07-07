@@ -99,10 +99,7 @@ class PlayerController : NSObject {
         //player.seek(to: CMTimeMakeWithSeconds(0.35, 1000), toleranceBefore: kCMTimeZero, toleranceAfter: kCMTimeZero)
         player.play()
         
-        guard !view.subviews.contains(self.playerView) else {
-            self.playerView.frame = view.bounds
-            return
-        }
+        if view.subviews.contains(self.playerView) { return }
         
         self.playerView.frame = view.bounds
         view.addSubview(self.playerView)
