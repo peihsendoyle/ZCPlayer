@@ -26,6 +26,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.tableView.backgroundColor = .white
         self.tableView.tableFooterView = UIView()
         self.tableView.separatorStyle = .none
         self.tableView.allowsSelection = false

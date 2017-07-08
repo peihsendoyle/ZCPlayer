@@ -72,7 +72,6 @@ class PlayerController : NSObject {
                 print("Status: Paused")
             case .likelyToKeepUp:
                 self.playerView.hideLoading()
-                //self.playerView.hideContainerView()
             case .unlikelyToKeepUp:
                 self.playerView.showLoading()
                 self.playerView.showContainerView()
@@ -92,19 +91,25 @@ class PlayerController : NSObject {
         }
         
         guard let player = self.player else { return }
-        //player.seek(to: CMTimeMakeWithSeconds(0.35, 1000), toleranceBefore: kCMTimeZero, toleranceAfter: kCMTimeZero)
         player.play()
         
         self.playerView.frame = view.bounds
         
         if !view.subviews.last!.isKind(of: PlayerView.self) {
+            // First time init --> cell need to add playerView again
             view.addSubview(self.playerView)
         } else {
-            if let lastSubview = view.subviews.last {
-                lastSubview.removeFromSuperview()
+            if let lastPlayerView = view.subviews.last as? PlayerView {
+                guard lastPlayerView !== self.playerView  else { /* Non reuse here */ return }
+                /* After Reused */
+                lastPlayerView.removeFromSuperview()
                 view.addSubview(self.playerView)
             }
         }
+    }
+    
+    fileprivate dynamic func removeView(view: UIView) {
+        view.removeFromSuperview()
     }
     
     func removePlayerViewFromSuperview() {

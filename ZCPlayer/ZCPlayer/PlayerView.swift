@@ -36,7 +36,7 @@ class PlayerView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        self.backgroundColor = UIColor.black
+        self.backgroundColor = .clear
         
         (self.layer as! AVPlayerLayer).frame = self.bounds
         (self.layer as! AVPlayerLayer).videoGravity = AVLayerVideoGravityResizeAspectFill
@@ -126,6 +126,7 @@ class PlayerView: UIView {
             self.containerView.alpha = 0
         }, completion: { _ in
             self.containerView.isHidden = true
+            self.timer.invalidate()
         })
     }
     
