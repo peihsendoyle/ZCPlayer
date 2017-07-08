@@ -28,11 +28,7 @@ class PlayerController : NSObject {
     fileprivate var currentTime : Double = 0.0
     fileprivate var durationTime : Double = 0.0
     fileprivate var timeObserver : Any?
-    fileprivate var isSeeking = false {
-        didSet {
-            self.playerView.isSeeking = self.isSeeking
-        }
-    }
+    fileprivate var isSeeking = false
     
     required init(url: URL) {
         super.init()
@@ -76,7 +72,7 @@ class PlayerController : NSObject {
                 print("Status: Paused")
             case .likelyToKeepUp:
                 self.playerView.hideLoading()
-                self.playerView.hideContainerView()
+                //self.playerView.hideContainerView()
             case .unlikelyToKeepUp:
                 self.playerView.showLoading()
                 self.playerView.showContainerView()

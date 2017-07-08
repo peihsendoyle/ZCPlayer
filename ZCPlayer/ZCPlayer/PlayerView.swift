@@ -29,7 +29,7 @@ class PlayerView: UIView {
     let slider = BufferSlider()
     fileprivate let button = UIButton()
     
-    var isSeeking = false
+    fileprivate var timer = Timer()
     
     override class var layerClass: AnyClass { return AVPlayerLayer.self }
     
@@ -111,7 +111,7 @@ class PlayerView: UIView {
         self.containerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-16-[button(15)]-8-[current(35)]-8-[slider]-8-[duration(35)]-16-|", options: [], metrics: nil, views: views))
     }
     
-    dynamic func touchedPlayerView() {
+    fileprivate dynamic func touchedPlayerView() {
         if self.containerView.isHidden == true {
             self.showContainerView()
         } else {
@@ -120,10 +120,10 @@ class PlayerView: UIView {
     }
     
     dynamic func hideContainerView() {
-        guard self.containerView.isHidden == false, self.isSeeking == false else { return }
+        guard self.containerView.isHidden == false else { return }
         
         UIView.animate(withDuration: 0.3, delay: 0, options: [], animations: {
-            self.containerView.alpha = 0 // Here you will get the animation you want
+            self.containerView.alpha = 0
         }, completion: { _ in
             self.containerView.isHidden = true
         })
@@ -135,7 +135,9 @@ class PlayerView: UIView {
         self.containerView.isHidden = false
         UIView.animate(withDuration: 0.3, delay: 0, options: [], animations: { 
             self.containerView.alpha = 1
-        }, completion: nil)
+        }, completion: { _ in
+            self.timer = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(self.hideContainerView), userInfo: nil, repeats: false)
+        })
     }
     
     fileprivate dynamic func touchedButton() {
@@ -176,10 +178,12 @@ class PlayerView: UIView {
     }
     
     dynamic fileprivate func beginScrubbing() {
+        self.timer.invalidate()
         self.delegate?.didBeginScrubbing()
     }
     
     dynamic fileprivate func endScrubbing() {
+        self.timer = Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(self.hideContainerView), userInfo: nil, repeats: false)
         self.delegate?.didEndScrubbing()
     }
     
