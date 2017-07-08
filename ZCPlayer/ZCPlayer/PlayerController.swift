@@ -99,15 +99,19 @@ class PlayerController : NSObject {
         //player.seek(to: CMTimeMakeWithSeconds(0.35, 1000), toleranceBefore: kCMTimeZero, toleranceAfter: kCMTimeZero)
         player.play()
         
-        if view.subviews.contains(self.playerView) { return }
-        
         self.playerView.frame = view.bounds
-        view.addSubview(self.playerView)
+        
+        if !view.subviews.last!.isKind(of: PlayerView.self) {
+            view.addSubview(self.playerView)
+        } else {
+            if let lastSubview = view.subviews.last {
+                lastSubview.removeFromSuperview()
+                view.addSubview(self.playerView)
+            }
+        }
     }
     
     func removePlayerViewFromSuperview() {
-        self.playerView.removeFromSuperview()
-        
         guard let player = self.player else { return }
         player.pause()
         self.playerView.hideContainerView()
