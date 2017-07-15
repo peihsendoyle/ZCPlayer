@@ -86,9 +86,9 @@ class PlayerController : NSObject {
     }
     
     func addPlayerViewToSuperview(view: UIView) {
-        if self.player.currentItem == nil {
-            self.player.replaceCurrentItem(with: self.playerItem)
-        }
+//        if self.player.currentItem == nil {
+//            self.player.replaceCurrentItem(with: self.playerItem)
+//        }
         
         guard let player = self.player else { return }
         player.play()
@@ -108,16 +108,12 @@ class PlayerController : NSObject {
         }
     }
     
-    fileprivate dynamic func removeView(view: UIView) {
-        view.removeFromSuperview()
-    }
-    
     func removePlayerViewFromSuperview() {
         guard let player = self.player else { return }
         player.pause()
         self.playerView.hideContainerView()
         
-        self.player.replaceCurrentItem(with: nil)
+//        self.player.replaceCurrentItem(with: nil)
     }
     
     func initScrubberTimer() {
